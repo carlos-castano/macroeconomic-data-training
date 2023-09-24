@@ -28,23 +28,6 @@ h2 {
     margin-left: 20px;
 }
 
-.link {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.link:hover {
-    text-decoration: underline;
-}
-
-.link {
-    color: #2174d1;
-    text-decoration: none;
-    font-weight: normal;
-    font-family: 'Arial', sans-serif;
-}
-
 img.rounded {
     border-radius: 12px;
 }
