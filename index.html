@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Análisis de Datos Macroeconómicos</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Análisis de métricas macroeconómicas</h1>
+        <p>Autor: Carlos Castaño Santos<br>Estudiante de segundo año de Ciencia de Datos Aplicada</p>
+        <div class="indice-container">
+          <h2>Índice</h2>
+          <ol>
+              <li><a href="#introduccion">Introducción</a></li>
+              <li><a href="#metricas">Métricas en la comprensión del GDP estadounidense y sus trampas</a></li>
+              <li><a href="#decisiones">Decisiones de la Reserva Federal</a></li>
+              <li><a href="#atentos">¡Atentos al trabajo!</a></li>
+              <li><a href="#final">Final</a></li>
+              <li><a href="#fuentes">Fuentes</a></li>
+          </ol>
+      </div>
+        <h2 id="introduccion">1. Introducción</h2>
+        <div class="subsection">
+          <p>El presente documento tiene como objetivo proporcionar al lector una comprensión intuitiva, visual y esencial de diversas métricas, decisiones y falacias comunes en el campo de la macroeconomía. </p>
+
+          <p>Con tal propósito, se analizarán índices relacionados con el Producto Interior Bruto y sus distintas métricas,
+             se debatirán decisiones de la Reserva Federal y, por último, se verá el comportamiento cíclico del paro estadounidense.</p>
+          <p>Por supuesto, no se pretende todo lo afirmado como cierto, ya que encontrará desde preguntas abiertas a afirmaciones 
+            categóricas. En cuyo caso, está invitado a tomar dichas afirmaciones con escepticismo y análisis crítico.</p>
+            <p>Cabe destacar que todas las transformaciones de datos y visualizaciones han sido comprobadas. De la misma forma, puede encontrar el código empleado en <a class="link" href="insertar enlace" target="_blank">este</a> repositorio de GitHub.</p>
+        </div>
+
+        <h2 id="metricas">2. Métricas en la comprensión del GDP estadounidense y sus trampas</h2>
+        <div class="subsection">
+            <p>En muchas ocasiones, leemos o vemos estadísticas relacionadas con el producto interior bruto de este país. En los títulos suele aparecer <em>QoQ</em> (trimestre actual contra el anterior) o <em>YoY</em> (comparativa interanual), pero, ¿por qué utilizamos una u otra? ¿Cuál es la más fiable? ¿Es relevante utilizar datos nominales o reales?</p>
+            <p>¡Datos a la obra!</p>
+            <h3>Una cuestión de tiempo</h3>
+            <p>Al evaluar el Producto Interior Bruto (<i>GDP</i>) de una economía, la elección entre métricas temporales, ya sea del crecimiento trimestral (QoQ) o del crecimiento interanual (YoY), es crucial
+               y conlleva diferencias significativas en las conclusiones.</p>
+            <p>Para enriquecer el análisis, conviene examinar el comportamiento trimestral histórico sin incluir el período de la pandemia de COVID-19 para evitar distorsiones causadas por valores extremos.</p>
+
+            <img id="grafico1" src="images/GDP_measures.png" alt="Descripción de la imagen" style="width: 80%" class="rounded center">
+
+            <div style="text-align: right; margin-right: 120px;">
+              <p style="color: gray; font-style: italic; margin-top: 5px;">
+                Units: Percent Growth in One Year and Value of Percent Change<br>
+                Reference Unit: Billions of dollars, Seasonally Adjusted Annual Rate<br>
+                Source: U.S. Bureau of Economic Analysis<br>
+                through fred.stlouisfed.org
+              </p>
+            </div>
+            <p>Tal y como se indica, las unidades empleadas son <b>dólares ajustados</b> que reducen las fluctuaciones entre trimestres (Navidad, pago de impuestos, etc.),<br>
+            es decir, la economía estadounidense no está 100% diversificada en beneficios como indicaría <em>Quarter Yoy</em>. Sin embargo, esta corrección resulta especialmente 
+            útil para hacer comparaciones más verosímiles.</p>
+            <p>Similar a un experimento de laboratorio, la precisión de este aumenta al reducir el ruido.
+              En este sentido, al hacer comparativas de períodos con características similares, la temporalidad interanual emerge como una herramienta más efectiva al evaluar el desempeño trimestral.<br>
+            Así, antes de emitir un juicio sobre la valoración trimestral del <i>GDP</i>, es prudente examinar primero el crecimiento interanual o profundizar mediante comparativas que reflejen históricamente ese período (T1-T2, T2-T4, etc).</p>
+            <p>¿Significa esto que debemos descartar por completo la métrica QoQ? De ninguna manera.<br> A pesar de su mayor volatilidad —recordando que estamos viendo valores ajustados—, esta métrica adquiere relevancia si se quieren identificar tendencias a corto plazo; comparar con otras métricas macroeconómicas; tomar decisiones en política monetaria o evaluar un impacto económico inmediato, como la afectación del precio del petróleo.</p>
+            <p>En definitiva, la elección entre temporalidades dependerá del contexto. Cuando se trata de evaluar la evolución del GDP con rigor de mediano o largo plazo, el enfoque interanual ofrece un análisis considerablemente más sólido.
+              Así es posible protegerse contra barbaridades de titulares sin matemática ni contexto como "<i>¡El anterior creció un 3%, ahora un 1%, decrece un 2%! ¡La crisis es inminente!</i>".
+            </p>
+            <p>Tras un primer contacto con las medidas temporales, ¿tenemos una comprensión sólida de la significativa elección entre valores reales y nominales?<p>
+              <h3>Bienvenidos sean, valores reales &#x1F451;</h3>
+              <p>En un contexto económico, los valores reales son determinados descontando el valor de la inflación o deflación de un valor nominal.<br>
+                De forma sencilla, partiendo de un GDP nominal de 1,000,000 y un crecimiento de los precios —reflejado en la variable <em>deflactor</em>— de un 5%, cabe calcular:</p>
+              <div style="text-align: center;">
+                <span style="color: gray;">
+                    <span style="display: inline-block; vertical-align: middle;">Real GDP =</span> <span style="display: inline-block; text-align: center; vertical-align: middle;">Nominal GDP<br>─────────<br>Deflator</span> <span style="font-size: x-large;">⇨</span> <span style="display: inline-block; text-align: center; vertical-align: middle;">1,000,000<br>─────────<br>1.05</span> = 952,380.952
+                </span>
+              </div>
+              <p>En el siguiente gráfico interactivo de datos interanuales puede analizar por sí mismo la comparativa.</p>
+              <p style="background-color: #f2f2f2; border-radius: 10px; padding: 10px;">
+                <strong>Exposición de algunos valores (lectura recomendada solo si desea profundizar en el gráfico):</strong><br><br>
+                &bull; Gráfico de puntos:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&bull; Crecimiento porcentual interanual - <em>Rate(%)</em><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&bull; Participación en el crecimiento de ese año (negativo si decrece)<br><br>
+                &bull; Gráfico de cajas:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&bull; Upper/Lower fence (más allá de estos valores se considera valor atípico, outlier o extremo)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&bull; q1 (25% de los valores son inferiores a ese punto)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&bull; q3 (75% de los valores son inferiores a ese punto)<br><br>
+                <strong>Ejemplo aclaratorio de <i>One-Year Growth Participation</i>:</strong><br>
+                En 2009, el crecimiento interanual por trimestre fue aproximadamente <b>-1.87</b>, -3.25, -3.02, 0.29.<br>
+                La suma de estos valores es <b>-7.85</b>.<br>
+                Como la suma anual es de decrecimiento (-), para T1 se calcula <b>-1.87</b>/<b>-7.85</b> * (-100) ≈ -23.82%<br>
+                De modo que ese trimestre contribuyó con un ≈ (-23.82%) en el crecimiento, es decir, ha decrecido.
+              </p>
+
+        <iframe src="images/Quarterly_Dynamics_YoY.html" width="100%" height="600" frameborder="0"></iframe>
+
+    <div style="text-align: right;">
+        <p style="color: gray; font-style: italic; margin-top: 10px; margin-right: 163px;">
+            Units: Percent Change from Year Ago<br>
+            Source: U.S. Bureau of Economic Analysis<br>
+            through fred.stlouisfed.org
+        </p>
+    </div>
+
+    <script>
+        // Función para buscar y actualizar el gráfico por año
+        function buscarPorAnio() {
+            var year = document.getElementById('yearInput').value;
+            var iframe = document.querySelector('#graficoContainer iframe');
+            // Construir la URL del gráfico con el año como parámetro de consulta
+            var newSrc = `images/Quarterly_Dynamics_YoY.html?year=${year}`;
+            // Actualizar el atributo src del iframe para cargar el nuevo gráfico
+            iframe.src = newSrc;
+        }
+    </script>
+              <!---->
+              
+              <div style="text-align: right;">
+                <p style="color: gray; font-style: italic; margin-top: 10px; margin-right: 163px;">
+                  Units: Percent Change from Year Ago<br>
+                  Source: U.S. Bureau of Economic Analysis<br>
+                through fred.stlouisfed.org
+                </p>
+              </div>
+              <p>En este punto, pueden hacerse dos afirmaciones:</p>
+                <ol>
+                    <li>El crecimiento real de la economía suele ser menor al valor nominal.</li>
+                    <li>Los valores reales son más compactos, dicho de otra forma, el rango <em>upper-lower fence</em> es claramente más reducido a excepción del T1.</li>
+                </ol>
+              <p>Ahora bien, debemos tener cuidado con estas sentencias dado su carácter general. Para ser más conscientes de la importancia en la decisión entre métricas, véanse las siguientes tablas:</p>
+              <div style="border: 2px solid rgba(255, 0, 0, 0.2); border-radius: 10px; padding: 10px; background-color: rgba(223, 89, 89, 0.147); height: 415px;">
+              <h4 style="margin-top: 0;">Table 1. <i>Inflated</i><br>Top 5 Highest Percent Difference<br>From 1971-Q1 to 2023-Q2</h4>
+              <table border="1" class="dataframe styled-table">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>DATE</th>
+                    <th>GDP YoY</th>
+                    <th>REAL GDP YoY</th>
+                    <th>DIFFERENCE</th>
+                    <th>x TIMES</th>
+                    <th>CHANGE (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1980-10-01</td>
+                    <td>9.61</td>
+                    <td>-0.04</td>
+                    <td>9.65</td>
+                    <td>-245.51</td>
+                    <td>24650.61 %</td>
+                  </tr>
+                  <tr>
+                    <td>1974-04-01</td>
+                    <td>8.22</td>
+                    <td>-0.21</td>
+                    <td>8.42</td>
+                    <td>-39.42</td>
+                    <td>4042.18 %</td>
+                  </tr>
+                  <tr>
+                    <td>1991-07-01</td>
+                    <td>3.17</td>
+                    <td>-0.10</td>
+                    <td>3.28</td>
+                    <td>-30.88</td>
+                    <td>3188.35 %</td>
+                  </tr>
+                  <tr>
+                    <td>1974-07-01</td>
+                    <td>8.80</td>
+                    <td>-0.63</td>
+                    <td>9.43</td>
+                    <td>-13.99</td>
+                    <td>1499.16 %</td>
+                  </tr>
+                  <tr>
+                    <td>1974-01-01</td>
+                    <td>8.26</td>
+                    <td>0.64</td>
+                    <td>7.62</td>
+                    <td>12.92</td>
+                    <td>1192.41 %</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="font-style: italic; color: gray; text-align: left; margin-left: 30px;">
+                <p>
+                  <span>Units: Percent Change from Year Ago</span><br>
+                  <span>Source: U.S. Bureau of Economic Analysis<br>
+                    through fred.stlouisfed.org</span><br>
+                  <span>CHANGE (%) represents the change between real and nominal. Positive values imply inflation and vice versa.</span><br>
+                  <span>Example (first row): The percentage change of 9.61 from -0.04 is -24650.61%. That percentage of -0.04 is equal to the difference (9.65).</span>
+                </p>
+              </div>
+            </div>
+            <div style="border: 2px solid rgba(64, 200, 241, 0.2); border-radius: 10px; padding: 10px; background-color: rgba(102, 194, 223, 0.147); margin-top: 5px; height: 380px">
+              <h4 style="margin-top: 0;">Table 2. <i>Still inflated</i><br>Top 5 Lowest Percent Difference<br>From 1971-Q1 to 2023-Q2</h4>
+              <table border="1" class="dataframe styled-table">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>DATE</th>
+                    <th>GDP YoY</th>
+                    <th>REAL GDP YoY</th>
+                    <th>DIFFERENCE</th>
+                    <th>x TIMES</th>
+                    <th>CHANGE (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2009-07-01</td>
+                    <td>-3.02</td>
+                    <td>-3.14</td>
+                    <td>0.12</td>
+                    <td>0.96</td>
+                    <td>3.71 %</td>
+                  </tr>
+                  <tr>
+                    <td>2020-04-01</td>
+                    <td>-7.69</td>
+                    <td>-8.35</td>
+                    <td>0.66</td>
+                    <td>0.92</td>
+                    <td>7.92 %</td>
+                  </tr>
+                  <tr>
+                    <td>2009-04-01</td>
+                    <td>-3.26</td>
+                    <td>-4.00</td>
+                    <td>0.74</td>
+                    <td>0.82</td>
+                    <td>18.43 %</td>
+                  </tr>
+                  <tr>
+                    <td>1998-10-01</td>
+                    <td>6.02</td>
+                    <td>4.88</td>
+                    <td>1.14</td>
+                    <td>1.23</td>
+                    <td>23.46 %</td>
+                  </tr>
+                  <tr>
+                    <td>1998-01-01</td>
+                    <td>6.02</td>
+                    <td>4.86</td>
+                    <td>1.17</td>
+                    <td>1.24</td>
+                    <td>24.09 %</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="font-style: italic; color: gray; text-align: left; margin-left: 30px;">
+                <p>
+                  <span>Units: Percent Change from Year Ago</span><br>
+                  <span>Source: U.S. Bureau of Economic Analysis<br>
+                    through fred.stlouisfed.org</span>
+                </p>
+              </div>
+            </div>
+            <p>Ahora y con los datos presentes, cabe cambiar la primera afirmación <i>"El crecimiento real de la economía <b>suele ser menor</b> al valor nominal"</i>
+            por <i>"El crecimiento real de la economía <b>es siempre</b> menor al valor nominal".</i></p>
+              <p>Asimismo, cabe indicar que, en el mismo cálculo y período referente a las tablas anteriores en medidas intertrimestrales o <em>QoQ</em>, aparecen de un total de 210 trimestres, 165 deflacionarios en un rango de -78.81% a -0.87 %.<br>
+                En estos términos, más que retomar el debate sobre una decisión en el uso de las métricas temporales, ocurre todo lo contrario: ¿puede alguien sostener que casi un 80% de los trimestres en los últimos 52 años han sido deflacionarios?</p>
+              <p>En conclusión, no ha sido posible encontrar un solo argumento a favor del uso de valores nominales. De hecho, al utilizarlos en futuros análisis, nos equivocaremos en una media por 2.85 veces su valor porcentual, aún eliminando el valor extremo de <i>1980-10-01</i>.</p>
+              <p>Como cierre de este debate, tomemos una visión amplia, intuitiva y sintetizada de las distintas métricas en la práctica.</p>
+            <h3>Final del acto: un resumen práctico</h3>
+            <p>Después de explicar e interpretar varias implicaciones en la decisión del uso de las distintas métricas macroeconómicas sobre el <i>GDP</i>, se invita al mismo lector a desarrollar sus propias conclusiones.
+              A modo de apoyo, encontrará en el siguiente gráfico las implicaciones prácticas de su elección en un rango superior a 50 años.</p>
+            <p style="background-color: #f2f2f2; border-radius: 10px; padding: 10px;">
+              <strong>Entendiendo el gráfico:</strong><br><br>
+              &bull; <strong>Puntos rojos:</strong> cualquier trimestre negativo.<br>
+              &bull; <strong>Barras verticales:</strong><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&bull; <strong>En verde</strong>, dos o más trimestres negativos consecutivos.<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&bull; <strong>En rojo</strong>, un solo trimestre en negativo, inmediatamente no consecutivo.<br><br>
+              La leyenda muestra el trimestre y el número de valores negativos asociados a la serie histórica.<br>
+              Puede hacer <i>click</i> en cada leyenda para facilitar la observación en la distribución de trimestres negativos.<br>
+            </p>
+            <iframe src="images/Comparative_measures_GDP.html" width="100%" height="800" frameborder="0"></iframe>
+            <div style="font-style: italic; color: gray; text-align: right; margin-right: 30px; margin-top: 0px;">
+              <p>
+                <span>Units: Percent Change from Preceding period,</span><br>
+                <span>Seasonally Adjusted Annual Rate</span><br>
+                <span>Source: U.S. Bureau of Economic Analysis<br>
+                  through fred.stlouisfed.org</span>
+              </p>
+            </div>
+              
+    </div>
+    <h2 id="decisiones">3. Decisiones de la Reserva Federal</h2>
+    <div class="subsection">
+      <p>En esta historia, el actor de mayor relevancia es la Reserva Federal o Banco Central Estadounidense. Una explicación sencilla y sintetizada de los papeles que lleva a cabo es la siguiente:</p>
+      <ul>
+          <li>Decidir la velocidad del dinero a través de los <b>tipos de interés</b>, determinando el precio mínimo por el cual los bancos comerciales prestan dinero a ciudadanos y empresas.</li>
+          <li>Ejecutar operaciones de compra-venta de instrumentos financieros para controlar la <b>cantidad de dinero en circulación</b>. También conocido como "<i>quemar e imprimir dinero</i>" o control de la liquidez. Una medida que intenta reflejar esta política es la <strong>M2</strong> (dinero fuera del tesoro de Estados Unidos <br>+ depósitos bancarios + depósitos de ahorro + etc.).</li>
+          <li>Cambiar de la <b>tasa de reservas</b> a bancos circunscritos, aumentando o reduciendo el porcentaje mínimo de sus reservas. Un instrumento de seguridad ante la quiebra y de control sobre su actividad.</li>
+      </ul>
+      <p>En resumen, se habla en toda regla de uno de los actores principales de la economía. Ahora y para intuir a grandes rasgos cómo pueden influir sus decisiones, véanse las siguientes matrices de correlación.</p>
+    <div style="display: flex; margin-left: 20px;">
+      <img id="grafico4" src="images/Corr_citizen.png" alt="Descripción de la imagen" style="width: 53%" class="rounded">
+      <img id="grafico5" src="images/Corr_SP.png" alt="Descripción de la imagen" style="width: 43%" class="rounded">
+    </div>
+        <div style="font-style: italic; color: gray; text-align: center; margin-right: 30px;">
+          <p>
+            <span>S&P 500 and S&P 500 Volume, Source: Yahoo Finance Via Python module</span><br>
+            <span>M2, Source: Board of Governors of the Federal Reserve System (US) Via fred.stlouisfed.org</span><br>
+            <span>All other data, Source: U.S. Bureau of Economic Analysis Via fred.stlouisfed.org</span><br><br>
+            <span>*Note: In May 2020, the Federal Reserve changed the way it measures M2</span>
+          </p>
+    </div>
+    <p>A este respecto, cabe tener mucho cuidado con las conclusiones.</p>
+
+    <p>Primero, la medida de liquidez M2 cambió curiosamente la forma en la que se mide en mayo del 2020. A priori, al pretender políticas
+    monetarias restrictivas, aumentan los tipos de interés y se reduce la liquidez tal y como representa la matriz a la derecha (-71). Por ese motivo,
+    es verdaderamente extraño que, durante el período inflacionario actual y durante 2 años, haya seguido aumentando hasta el punto de tener correlación positiva (incluido en el gráfico izquierdo)
+    para más tarde hacer ligeras retiradas que prácticamente mantienen la liquidez.</p>
+    <p>Segundo, la relación entre la M2 y el valor en dólares del índice bursátil de referencia S&P 500 es alta independientemente del período. Aunque en fechas más recientes
+    el volumen reduce la correlación entre la M2 y el valor del índice, siendo positiva de todas maneras.</p>
+    <p>Además, habrá observado la baja relación entre los tipos de interés y la inflación. Con el fin de entender mejor esta relación, 
+    se presenta el siguiente apartado.</p>
+    <h3>Afianzando el interés</h3>
+    <p>Todos tenemos la idea intuitiva de que la inflación es el aumento de precios generalizado. En tales períodos, ciudadanos y empresas disponen
+      de una riqueza real menor, por lo que gastan menos. Además, los bancos centrales suben los tipos de interés para encarecer el crédito y ahuyentar a los prestatarios.
+     De este modo, con menores beneficios y menor crédito disponible, se reduce el gasto generalizado y los precios bajan.<br>
+     
+     Para comenzar de nuevo el ciclo y tras una estabilización prolongada de precios, los tipos de interés pueden volver a bajar para incentivar una economía engarrotada.</p>
+     Es común pensar que los préstamos negativos o la impresión de dinero provocan inflación, algo cierto pero con excepciones.<br>
+     Por un momento, imaginemos que se imprime dinero para construir un gasoducto que reducirá los costes de producción. En tal caso, aún permaneciendo <br>el dinero en circulación, los precios se reducirán como consecuencia del aumento de bienes.<br>
+     En definitiva, la economía no se vuelve inflacionaria mientras el gasto e ingreso o liquidez no aumente más rápido que la producción de bienes.<br>
+     Ahora bien, las circunstancias cambian cuando tipos de interés semejantes se ofrecen al total de la economía, asumiendo una excelente productividad global del país.</p>
+     
+     <p>Para reconocer este hecho, véase el siguiente gráfico interactivo, preferiblemente manteniendo la línea de tipos de interés y cambiando el índice inflacionario.</p>
+     <iframe src="images/cpi_decisions.html" width="100%" height="600" frameborder="0"></iframe>
+            <div style="text-align: right;">
+              <p style="color: gray; font-style: italic; margin-top: 0px; margin-right: 250px;">
+                Unemployment Units: Percent<br>
+                CPI Units: Percent Change from Year Ago<br>
+                  CPI for All Urban Consumers in U.S. City Average<br>
+                Source: U.S. Bureau of Economic Analysis<br>
+                through fred.stlouisfed.org<br>
+              </p>
+          </div>
+          <p>En este punto, ya se conoce que la Reserva Federal es capaz de controlar la inflación haciendo uso de su herramienta de mayor influencia: los tipos de interés.
+            Así, esta institución cambia los ratios dependiendo de los datos presentes de inflación y no al revés. Por ese motivo, habrá visto como <b>hasta
+             finales de 2008, los tipos suelen ser superiores a la inflación</b> con el fin de reducir las transacciones y precios.<br>
+            Para proporcionar una imagen más detallada, desde 1970 hasta 2015, la correlación entre tipos de interés e inflación rondaba el 72%. 
+            Mientras, en el período de 2015 hasta junio de 2023, este valor era del 23%.</p>
+        
+        <div style="clear: both;"></div>
+        
+        <p style="float: left; width: 60%;">Sin ninguna duda, la política monetaria lleva siendo cuestionable mucho tiempo. En suma, la pandemia de COVID-19 
+            provocó la desconexión entre economías, cuellos de botella y una reducción drástica en la producción de bienes entre otros. ¿Cúal fue la respuesta? 
+            Imprimir dinero y retomar 2 años—de los 9 recientes anteriores— con tipos al 0%.<br>
+            Más tarde, se han ejercido políticas que encarecen severamente las materias primas y la energía, elevando precios de forma generalizada. De igual manera,
+            en tiempos de supuesta austeridad económica, ha crecido el gasto público y la deuda en gastos no productivos.<br>
+            En este contexto, ¿es razonable pensar que la inflación no ha sido deliberada?</p>
+        
+        <img src="images/total_debt.png" alt="Total Debt" style="max-width: 40%; float: right; vertical-align: top;">
+        <!--Fuentes-->
+
+
+        <div style="clear: both;"></div>
+        <div style="text-align: right;">
+          <p style="color: gray; font-style: italic; margin-top: 10px; margin-right: 15px; font-size: smaller;">
+            Source: U.S. Department of the Treasury’s Bureau of the Fiscal Service</p>
+        </div>
+        
+      <h2 id="atentos">4. ¡Atentos al trabajo!</h2>
+      <p>Para concluir el temario, puede resultar interesante comprender el comportamiento del desempleo en distintos escenarios económicos,
+        aunque algunos puedan creer que no les afectará si conservan su empleo, esta percepción dista mucho de la realidad.<br>
+        Cuando el desempleo crece, los impuestos recaudados por el gobierno caen y aumenta el gasto en subsidios. Cuando esto ocurre, difícilmente
+        un estado puede emplear políticas económicas y, por lo tanto sociales, beneficiosas para su población. Más bien todo lo contrario.</p>
+        
+        <p>Para intuir visualmente como suele comportarse este, véase el siguiente gráfico:</p>
+        <iframe src="images/Unemployment.html" width="100%" height="600" frameborder="0"></iframe>
+        <div style="text-align: right;">
+          <p style="color: gray; font-style: italic; margin-top: 0px; margin-right: 100px;">
+            Unemployment Units: Percent<br>
+            Source: epdata.es<br><br>
+            GDP Units: Percent Change QoQ<br>
+            Source: U.S. Bureau of Economic Analysis<br>
+            through fred.stlouisfed.org<br><br>
+            GDP-Based Recession Indicator Index,<br>
+            Source: Hamilton, James Via fred.stlouisfed.org
+          </p>
+      </div>
+        <p>En la imagen anterior se ha utilizado la comparativa <em>GDP</em> intertrimestral para seguir más de cerca las tendencias económicas cortoplacistas 
+          que pudiesen correlacionarse en aquel momento al desempleo. Así, se aprecia generalmente que en períodos expansionistas, el desempleo se reduce o mantiene y, por el contrario,
+        este aumenta en las recesiones.</p>
+        
+        <p> Es muy probable haber escuchado alguna vez "<i>el desempleo es un indicador adelantado</i>". ¡Y así es! De hecho, es muy difícil evaluar 
+        el desarrollo económico en períodos reducidos (recibir impuestos, datos de beneficios, etc.) en comparación con la inmediatez de subsidios o en segundo plano mediante encuestas.
+        Por ello, una serie temporal reducida de estos datos es capaz de ofrecer una evaluación económica simple pero certera en tendencia, augurando eventos futuros.</p>
+        <p>También es claro que el porcentaje de desempleo es estable previo a la contracción. Por ello, se pueden considerar irrelevantes los discursos locales (evitando la extraploación) socialmente tranquilizadores
+        al afirmar un empleo fuerte que, pese a tener más implicaciones, no hace descartable el inicio de una crisis.</p>
+        <h2 id="final">5. Final</h2>
+        <p>En síntesis, a través del análisis de los índices, se ha podido observar las trampas en el uso de distintas métricas que valoran el GDP, así como identificar políticas económicas cuestionables de la Reserva Federal, sin olvidarnos de otorgar importancia a los pequeños aumentos en la tendencia del desempleo.</p>
+        <p>Si bien ya se ha comentado que no se pueden extrapolar las conclusiones del desempleo por características propias de cada mercado laboral, sí suelen ser igual de perjudiciales las falacias en la evaluación del PIB y políticas monetarias similares por parte de los Bancos Centrales.</p>
+        <p>Espero que si no disponía de herramientas que le alertasen sobre estas falacias, ahora disponga de estas para darle uso en el momento de leer o escuchar noticias sobre economía. Del mismo modo, espero que haya podido disfrutar de la lectura de este análisis si también comparte esta afición. Gracias por su atención.</p>
+
+
+        <h2 id="fuentes">6. Fuentes</h2>
+        <div class="subsection">
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span>  <a href="https://fred.stlouisfed.org/series/FEDFUNDS" target="_blank" style="color: rgb(107, 200, 231);">Tipos de interés</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span> <a href="https://fred.stlouisfed.org/graph/?g=8dGq" target="_blank" style="color: rgb(107, 200, 231);">Inflación</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span> <a href="https://fred.stlouisfed.org/series/GDP/#0" target="_blank" style="color: rgb(107, 200, 231);">GDP (o PIB) nominal</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span> <a href="https://fred.stlouisfed.org/series/A191RL1Q225SBEA" target="_blank" style="color: rgb(107, 200, 231);">GDP real</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span> <a href="https://fred.stlouisfed.org/series/M2SL" target="_blank" style="color:rgb(107, 200, 231);">M2 (o liquidez)</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Reserva federal de St. Louis.</span> <a href="https://fred.stlouisfed.org/graph/?g=8dGq" target="_blank" style="color: rgb(107, 200, 231);">Inflación general y subyacente</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Tesoro del gobierno estadounidense.</span> <a href="https://fiscaldata.treasury.gov/datasets/historical-debt-outstanding/historical-debt-outstanding" target="_blank" style="color: rgb(107, 200, 231);">Deuda hasta 2022</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Tesoro del gobierno estadounidense.</span> <a href="https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/debt-to-the-penny" target="_blank" style="color: rgb(107, 200, 231);">Deuda hasta 2023</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Epdata, repositorio de fuentes estatales.</span> <a href="https://www.epdata.es/evolucion-tasa-paro-estados-unidos-2000/83118f5c-7978-4706-8e00-41e9cf8eaefc" target="_blank" style="color: rgb(107, 200, 231);">Desempleo</span></a></p>
+        
+            <p><span style="color: gray; font-style: italic;">Yahoo finance a través del módulo yfinance.</span> <span style="color: gray; font-style: italic;">Datos del S&amp;P 500.</span></p>
+        </div>
+        </div>
+        
+        
+
+</body>
+</html>
